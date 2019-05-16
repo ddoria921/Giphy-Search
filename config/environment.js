@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config()
 
 module.exports = function(environment) {
   let ENV = {
@@ -20,6 +21,7 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+      GIPHY_API_KEY: process.env.GIPHY_API_KEY
     }
   };
 
