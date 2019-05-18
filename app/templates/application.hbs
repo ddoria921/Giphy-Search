@@ -1,3 +1,18 @@
-<h2 id="title">Welcome to Ember</h2>
+<GiphyProvider as |gifs| >
+  <ul>
+    {{#if gifs.loading}}
+      <h2>Loading...</h2>
+    {{/if}}
 
-{{outlet}}
+    {{#each gifs.results as |gif|}}
+      <li>
+        <img
+          src={{gif.url}}
+          width={{gif.width}}
+          height={{gif.height}}
+          alt={{gif.title}}
+        >
+      </li>
+    {{/each}}
+  </ul>
+</GiphyProvider>
