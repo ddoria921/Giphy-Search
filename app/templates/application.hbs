@@ -2,8 +2,8 @@
 
 {{#if (gte this.searchQuery.length "3")}}
   <select name="gif_type" id="gif_type" onchange={{action (mut this.imageType) value="target.value"}}>
-    <option value="fixed_width">Fixed</option>
-    <option value="fixed_width_small_still">Fixed small</option>
+    <option value="fixed">Fixed</option>
+    <option value="fixed-small">Fixed small</option>
     <option value="downsized">Downsized</option>
   </select>
 

@@ -66,4 +66,35 @@ module('Acceptance | Index', function(hooks) {
     await fillIn('input[type="search"]', 'wo');
     await fillIn('input[type="search"]', 'word');
   });
+
+  test('User can switch gif type with dropdown', async function(assert) {
+    this.server.get('/search', () => searchGifsFixture);
+
+    await visit('/');
+    await fillIn('input[type="search"]', 'the office');
+
+    await fillIn('select', 'downsized');
+
+    for (let index = 0; index < searchGifsFixture.data.length; index++) {
+      const gif = searchGifsFixture.data[index];
+      const { url } = gif.images.downsized;
+      assert.dom(`img[src="${url}"]`).exists();
+    }
+
+    await fillIn('select', 'fixed-small');
+
+    for (let index = 0; index < searchGifsFixture.data.length; index++) {
+      const gif = searchGifsFixture.data[index];
+      const { url } = gif.images.fixed_width_small_still;
+      assert.dom(`img[src="${url}"]`).exists();
+    }
+
+    await fillIn('select', 'fixed');
+
+    for (let index = 0; index < searchGifsFixture.data.length; index++) {
+      const gif = searchGifsFixture.data[index];
+      const { url } = gif.images.fixed_width;
+      assert.dom(`img[src="${url}"]`).exists();
+    }
+  });
 });
