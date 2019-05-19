@@ -1,18 +1,60 @@
-<GiphyProvider as |gifs| >
-  <ul>
-    {{#if gifs.loading}}
-      <h2>Loading...</h2>
-    {{/if}}
+<Input type="search" @value={{this.searchQuery}} />
 
-    {{#each gifs.results as |gif|}}
-      <li>
-        <img
-          src={{gif.url}}
-          width={{gif.width}}
-          height={{gif.height}}
-          alt={{gif.title}}
-        >
-      </li>
-    {{/each}}
-  </ul>
-</GiphyProvider>
+{{#if (gte this.searchQuery.length "3")}}
+  <select name="gif_type" id="gif_type" onchange={{action (mut this.imageType) value="target.value"}}>
+    <option value="fixed_width">Fixed</option>
+    <option value="fixed_width_small_still">Fixed small</option>
+    <option value="downsized">Downsized</option>
+  </select>
+
+  <h1>Search results</h1>
+
+  <button type="button" {{action (mut this.searchQuery "")}}>Show trending gifs</button>
+
+  {{!-- Show trending gifs --}}
+  <GiphyProvider
+    @endpoint="search"
+    @type={{this.imageType}}
+    @options={{hash q=this.searchQuery}} as |gifs|
+  >
+    <ul>
+      {{#if gifs.loading}}
+        <h2>Loading...</h2>
+      {{/if}}
+
+      {{#each gifs.results as |gif|}}
+        <li>
+          <img
+            src={{gif.url}}
+            width={{gif.width}}
+            height={{gif.height}}
+            alt={{gif.title}}
+          >
+        </li>
+      {{/each}}
+    </ul>
+  </GiphyProvider>
+{{else}}
+  {{!-- Show trending gifs --}}
+  <h1>Trending</h1>
+  <GiphyProvider @endpoint="trending" as |gifs| >
+    <ul>
+      {{#if gifs.loading}}
+        <h2>Loading...</h2>
+      {{/if}}
+
+      {{#each gifs.results as |gif|}}
+        <li>
+          <img
+            src={{gif.url}}
+            width={{gif.width}}
+            height={{gif.height}}
+            alt={{gif.title}}
+          >
+        </li>
+      {{/each}}
+    </ul>
+  </GiphyProvider>
+{{/if}}
+
+
