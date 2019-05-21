@@ -1,60 +1,73 @@
-<Input type="search" @value={{this.searchQuery}} />
+<main class="app">
+  <div class="input-container">
+    <Input class="textbox" type="search" placeholder="Search Giphy..." @value={{this.searchQuery}} />
 
-{{#if (gte this.searchQuery.length "3")}}
-  <select name="gif_type" id="gif_type" onchange={{action (mut this.imageType) value="target.value"}}>
-    <option value="fixed">Fixed</option>
-    <option value="fixed-small">Fixed small</option>
-    <option value="downsized">Downsized</option>
-  </select>
+    {{#if (gte this.searchQuery.length "3")}}
+      <select
+        id="gif_type"
+        class="dropdown"
+        name="gif_type"
+        onchange={{action (mut this.imageType) value="target.value"}}
+      >
+        <option value="fixed" selected={{eq this.imageType "fixed"}}>Fixed Width</option>
+        <option value="fixed-small" selected={{eq this.imageType "fixed-small"}}>Fixed Width Small</option>
+        <option value="downsized" selected={{eq this.imageType "downsized"}}>Downsized</option>
+      </select>
+    {{/if}}
+  </div>
 
-  <h1>Search results</h1>
+  {{#if (gte this.searchQuery.length "3")}}
+    <button class="btn" type="button" {{action (mut this.searchQuery "")}}>Show trending gifs</button>
 
-  <button type="button" {{action (mut this.searchQuery "")}}>Show trending gifs</button>
+    {{!-- Show search results --}}
+    <GiphyProvider
+      @endpoint="search"
+      @type={{this.imageType}}
+      @options={{hash q=this.searchQuery}} as |gifs|
+    >
+      <ul>
+        {{#if gifs.loading}}
+          <h2 data-test-loading>Loading...</h2>
+        {{/if}}
 
-  {{!-- Show trending gifs --}}
-  <GiphyProvider
-    @endpoint="search"
-    @type={{this.imageType}}
-    @options={{hash q=this.searchQuery}} as |gifs|
-  >
-    <ul>
-      {{#if gifs.loading}}
-        <h2>Loading...</h2>
-      {{/if}}
+        {{#each gifs.results as |gif|}}
+          <li>
+            <img
+              class="gif-preview"
+              src={{gif.url}}
+              width={{gif.width}}
+              height={{gif.height}}
+              alt={{gif.title}}
+            >
+          </li>
+        {{else if (not gifs.loading)}}
+          <h2>No Results</h2>
+        {{/each}}
+      </ul>
+    </GiphyProvider>
+  {{else}}
+    {{!-- Show trending gifs --}}
+    <h1>Trending</h1>
+    <GiphyProvider @endpoint="trending" as |gifs| >
+      <ul>
+        {{#if gifs.loading}}
+          <h2 data-test-loading>Loading...</h2>
+        {{/if}}
 
-      {{#each gifs.results as |gif|}}
-        <li>
-          <img
-            src={{gif.url}}
-            width={{gif.width}}
-            height={{gif.height}}
-            alt={{gif.title}}
-          >
-        </li>
-      {{/each}}
-    </ul>
-  </GiphyProvider>
-{{else}}
-  {{!-- Show trending gifs --}}
-  <h1>Trending</h1>
-  <GiphyProvider @endpoint="trending" as |gifs| >
-    <ul>
-      {{#if gifs.loading}}
-        <h2>Loading...</h2>
-      {{/if}}
-
-      {{#each gifs.results as |gif|}}
-        <li>
-          <img
-            src={{gif.url}}
-            width={{gif.width}}
-            height={{gif.height}}
-            alt={{gif.title}}
-          >
-        </li>
-      {{/each}}
-    </ul>
-  </GiphyProvider>
-{{/if}}
-
-
+        {{#each gifs.results as |gif|}}
+          <li>
+            <img
+              class="gif-preview"
+              src={{gif.url}}
+              width={{gif.width}}
+              height={{gif.height}}
+              alt={{gif.title}}
+            >
+          </li>
+        {{else if (not gifs.loading)}}
+          <h2>No Results</h2>
+        {{/each}}
+      </ul>
+    </GiphyProvider>
+  {{/if}}
+</main>
