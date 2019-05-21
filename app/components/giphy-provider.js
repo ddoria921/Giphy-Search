@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { task } from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 import fetch from 'fetch';
 import config from 'giphy-search/config/environment';
 
@@ -46,6 +46,9 @@ export default Component.extend({
   fetchGifs: task(function*() {
     let results = [];
 
+    // throttle number of searches
+    yield timeout(200);
+
     try {
       const response = yield fetch(this.buildUrl());
       const { data } = yield response.json();
@@ -58,7 +61,7 @@ export default Component.extend({
     }
 
     this.set('results', results);
-  }).keepLatest(),
+  }).restartable(),
 
   // -- Helper methods --//
   convertToQueryString(options) {

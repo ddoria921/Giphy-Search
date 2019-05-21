@@ -17,7 +17,7 @@
   </div>
 
   {{#if this.activeGif}}
-    <p>{{this.activeGif}}</p>
+    <p>{{this.activeGif}}</p> <button class="btn" type="button" {{action (mut this.activeGif) ""}}>Clear URL</button>
   {{/if}}
 
   {{#if (gte this.searchQuery.length "3")}}
