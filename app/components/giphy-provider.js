@@ -12,6 +12,8 @@ export default Component.extend({
 
   //-- Internal State --//
   results: null,
+  _lastRawResults: null,
+  _lastType: 'fixed_width',
 
   //-- Computed Properties --//
   apiEndpoint: computed('endpoint', function() {
@@ -39,7 +41,15 @@ export default Component.extend({
   // -- Lifecycle --//
   didReceiveAttrs() {
     this._super(...arguments);
-    this.fetchGifs.perform();
+
+    if (this.gifType !== this._lastType && this._lastRawResults) {
+      const newResults = this._lastRawResults.map(gif => this.imageWithGifTitle(gif));
+      this.set('results', newResults);
+    } else {
+      this.fetchGifs.perform();
+    }
+
+    this.set('_lastType', this.gifType);
   },
 
   // -- Tasks --//
@@ -53,9 +63,8 @@ export default Component.extend({
       const response = yield fetch(this.buildUrl());
       const { data } = yield response.json();
 
-      results = data.map(gif => {
-        return Object.assign({ title: gif.title }, gif.images[this.gifType]);
-      });
+      this.set('_lastRawResults', data);
+      results = data.map(gif => this.imageWithGifTitle(gif));
     } catch (error) {
       console.error(error);
     }
@@ -64,6 +73,10 @@ export default Component.extend({
   }).restartable(),
 
   // -- Helper methods --//
+  imageWithGifTitle(gif) {
+    return Object.assign({ title: gif.title }, gif.images[this.gifType]);
+  },
+
   convertToQueryString(options) {
     let queryString = '';
 
@@ -85,7 +98,7 @@ export default Component.extend({
   buildUrl() {
     const { apiEndpoint, options } = this;
     const serializedOptions = this.convertToQueryString(options);
-    let url = `http://api.giphy.com/v1/gifs/${apiEndpoint}?api_key=${
+    let url = `https://api.giphy.com/v1/gifs/${apiEndpoint}?api_key=${
       config.APP.GIPHY_API_KEY
     }`;
 
