@@ -29,7 +29,14 @@ h2 {
   text-align: center;
 }
 
-.gif-preview {
+.giphy-preview {
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0.4rem;
+}
+
+.giphy-preview img {
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
   border: 1px solid #E2E8F0;
   border-radius: 0.4rem;
@@ -93,6 +100,7 @@ h2 {
 
 .textbox:focus,
 .dropdown:focus,
+.giphy-preview:focus,
 .btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);

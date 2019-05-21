@@ -16,6 +16,10 @@
     {{/if}}
   </div>
 
+  {{#if this.activeGif}}
+    <p>{{this.activeGif}}</p>
+  {{/if}}
+
   {{#if (gte this.searchQuery.length "3")}}
     <button class="btn" type="button" {{action (mut this.searchQuery "")}}>Show trending gifs</button>
 
@@ -32,13 +36,7 @@
 
         {{#each gifs.results as |gif|}}
           <li>
-            <img
-              class="gif-preview"
-              src={{gif.url}}
-              width={{gif.width}}
-              height={{gif.height}}
-              alt={{gif.title}}
-            >
+            <GiphyPreview @gif={{gif}} @onClick={{action (mut this.activeGif) gif.url}}/>
           </li>
         {{else if (not gifs.loading)}}
           <h2>No Results</h2>
@@ -56,13 +54,7 @@
 
         {{#each gifs.results as |gif|}}
           <li>
-            <img
-              class="gif-preview"
-              src={{gif.url}}
-              width={{gif.width}}
-              height={{gif.height}}
-              alt={{gif.title}}
-            >
+            <GiphyPreview @gif={{gif}} @onClick={{action (mut this.activeGif) gif.url}}/>
           </li>
         {{else if (not gifs.loading)}}
           <h2>No Results</h2>
