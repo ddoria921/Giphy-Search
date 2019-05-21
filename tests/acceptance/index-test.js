@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, currentURL, fillIn, click } from '@ember/test-helpers';
+import { visit, currentURL, fillIn, click, waitFor } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import trendingGifsFixture from '../../mirage/fixtures/trending';
@@ -59,12 +59,16 @@ module('Acceptance | Index', function(hooks) {
       assert.ok(request.queryParams.q.length >= 3);
       done();
       return searchGifsFixture;
-    });
+    }, { timing: 200 });
 
     await visit('/');
     await fillIn('input[type="search"]', 'w');
     await fillIn('input[type="search"]', 'wo');
-    await fillIn('input[type="search"]', 'word');
+
+    fillIn('input[type="search"]', 'word');
+
+    // UI should show loading state
+    await waitFor('[data-test-loading]', { timeout: 200, count: 1 });
   });
 
   test('User can switch gif type with dropdown', async function(assert) {
