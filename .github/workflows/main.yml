@@ -9,9 +9,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
+    - name: Install Dependencies 
+      uses: CultureHQ/actions-yarn@master
+      with:
+        args: install
+    - name: Build
+      uses: alexlafroscia/actions-ember-testing@master
+    - name: Done
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        echo Done with build,
+        echo Hooray!
